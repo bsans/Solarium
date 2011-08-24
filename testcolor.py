@@ -262,13 +262,13 @@ multicmap = multi_step_gradient(mycolors, mycolorpos)
 #image7 = Image.new("RGB", (181, 181), SKYBLUE1)
 #control = draw_lines(181, 181, dawncmap, image6)
 #control.show()
-gray150cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_150, 180))
+gray200cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_200, 180))
 image8 = Image.new("RGB", (181, 181), BLACK)
-gray150 = draw_lines(181, 181, gray150cmap, image8)
+gray200 = draw_lines(181, 181, gray200cmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
-output_to_file(gray150cmap)
+output_to_file(gray200cmap)
 print
-print len(gray150cmap)
-gray150.show()
+print len(gray200cmap)
+gray200.show()
 
