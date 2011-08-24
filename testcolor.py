@@ -37,6 +37,15 @@ AZ_SUNSET_HORIZ_20D = (226, 200, 87)
 AZ_SUNSET_HORIZ_50D = (210, 165, 198)
 AZ_SUNSET_HORIZ_90D = (19, 21, 121)
 
+MIDPM_0D = (255, 255, 255)
+MIDPM_5D = (209, 214, 232)
+MIDPM_10D = (110, 136, 202)
+MIDPM_30D = (83, 107, 179)
+MIDPM_60D = (58, 86, 159)
+MIDPM_120D = (58, 86, 159)
+MIDPM_150D = (83, 107, 179)
+MIDPM_180D = (153, 174, 209)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -240,6 +249,10 @@ def output_to_file(cmap):
   print "writing the following to file:"
   print
   print output
+  print
+  print "number of elements:"
+  print
+  print len(output)
   f.write(output)
   f.close()
 
@@ -274,21 +287,38 @@ image4output = draw_lines(181, 181, suntestcmap, image4)
 dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 
 # for sunset
-multicolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
-multicolorpos = [0, 5, 20, 50, 90, 180]
-multicmap = int_cast(multi_step_gradient(multicolors, multicolorpos))
+sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
+sunsetcolorpos = [0, 5, 20, 50, 90, 180]
 
 
-AZ_SUNSET_HORIZ = (216, 105, 0)
-AZ_SUNSET_HORIZ_5D = (216, 169, 19)
-AZ_SUNSET_HORIZ_20D = (226, 200, 87)
-AZ_SUNSET_HORIZ_50D = (210, 165, 198)
-AZ_SUNSET_HORIZ_90D = (19, 21, 121)
+
+sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
+
 image9 = Image.new("RGB", (181, 181), BLACK)
-multicol = draw_lines(181, 181, multicmap, image9)
-multicol.show()
-#print output_cmap(multicmap)
-output_to_file(multicmap)
+sunsetimage = draw_lines(181, 181, sunsetcmap, image9)
+sunsetimage.show()
+#output_to_file(multicmap)
+
+# for mid-afternoon
+MIDPM_0D = (255, 255, 255)
+MIDPM_5D = (209, 214, 232)
+MIDPM_10D = (110, 136, 202)
+MIDPM_30D = (83, 107, 179)
+MIDPM_60D = (58, 86, 159)
+MIDPM_120D = (58, 86, 159)
+MIDPM_150D = (83, 107, 179)
+MIDPM_180D = (153, 174, 209)
+
+
+
+midpmcolors = [MIDPM_0D, MIDPM_5D, MIDPM_10D, MIDPM_30D, MIDPM_60D, MIDPM_120D, MIDPM_150D, MIDPM_180D]
+midpmcolorpos = [0, 5, 10, 30, 60, 120, 150, 180]
+midpmcmap = int_cast(multi_step_gradient(midpmcolors, midpmcolorpos))
+image10 = Image.new("RGB", (181, 181), BLACK)
+midpmimage = draw_lines(181, 181, midpmcmap, image10)
+midpmimage.show()
+output_to_file(midpmcmap)
+
 
 #image1output = draw_lines(181, 181, cmaptest1, image3)
 #image2output = draw_lines(181, 181, cmaptest2, image3)
