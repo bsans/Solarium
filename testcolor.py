@@ -254,7 +254,7 @@ mycolors = [PREDAWN_HORIZON, PREDAWN_HORIZ_2, PREDAWN_HORIZ_3, PREDAWN_ZENITH]
 mycolorpos = [0, 20, 50, 180]
 multicmap = multi_step_gradient(mycolors, mycolorpos)
 #pp.pprint(multicmap)
-image6 = Image.new("RGB", (181, 181), SKYBLUE1)
+#image6 = Image.new("RGB", (181, 181), SKYBLUE1)
 #dawntest = draw_lines(181, 181, multicmap, image6)
 #dawntest.show()
 #print output_cmap(multicmap)
@@ -262,13 +262,13 @@ image6 = Image.new("RGB", (181, 181), SKYBLUE1)
 #image7 = Image.new("RGB", (181, 181), SKYBLUE1)
 #control = draw_lines(181, 181, dawncmap, image6)
 #control.show()
-gray50cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_50, 180))
+gray100cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_100, 180))
 image8 = Image.new("RGB", (181, 181), BLACK)
-gray50 = draw_lines(181, 181, gray50cmap, image8)
+gray100 = draw_lines(181, 181, gray100cmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
-output_to_file(gray50cmap)
+output_to_file(gray100cmap)
 print
-print len(gray50cmap)
-gray50.show()
+print len(gray100cmap)
+gray100.show()
 
