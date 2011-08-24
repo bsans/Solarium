@@ -10,6 +10,8 @@ import pickle
 #draw = ImageDraw.Draw(im)
 #draw.line((0, im.size[1], im.size[0], 0), fill=128)
 #im.show()
+
+# Constant color values used for colormap making
 BASENIGHT_COLOR=(3, 6, 15)
 BASEDAY_COLOR=(120, 181, 244)
 DUSK_COLOR=(180, 154, 127)
@@ -21,6 +23,11 @@ PREDAWN_HORIZ_3 = (8, 16, 35)
 PREDAWN_ZENITH = (4, 7, 14)
 BLACK = (0, 0, 0)
 GRAYSCALE_20 = (20, 20, 20)
+GRAYSCALE_50 = (50, 50, 50)
+GRAYSCALE_100 = (100, 100, 100)
+GRAYSCALE_150 = (150, 150, 150)
+GRAYSCALE_200 = (200, 200, 200)
+GRAYSCALE_255 = (255, 255, 255)
 
 def linear_gradient(start_color, end_color, num_steps):
   """
@@ -255,16 +262,13 @@ image6 = Image.new("RGB", (181, 181), SKYBLUE1)
 #image7 = Image.new("RGB", (181, 181), SKYBLUE1)
 #control = draw_lines(181, 181, dawncmap, image6)
 #control.show()
-BLACK = (0, 0, 0)
-GRAYSCALE_20 = (20, 20, 20)
-gray20cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_20, 180))
+gray50cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_50, 180))
 image8 = Image.new("RGB", (181, 181), BLACK)
-#gray20 = draw_lines(181, 181, gray20cmap, image8)
+gray50 = draw_lines(181, 181, gray50cmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
-#print output_cmap(gray20cmap)
-output_to_file(gray20cmap)
+output_to_file(gray50cmap)
 print
-print len(gray20cmap)
-#gray20.show()
+print len(gray50cmap)
+gray50.show()
 
