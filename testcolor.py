@@ -81,23 +81,86 @@ def interpolate_colormaps(cmap1, time1, cmap2, time2, thistime):
     output.append((elem, cinter_green[idx], cinter_blue[idx]))
 
   return output
-  
+
+def add_colormaps(cmap1, cmap2):
+  """
+  Stupidly adds RGB (3-tuples) values for the two complete colormaps.
+  """
+  cmap1_red = [i[0] for i in cmap1]
+  cmap1_green = [i[1] for i in cmap1]
+  cmap1_blue = [i[2] for i in cmap1]
+  cmap2_red = [i[0] for i in cmap2]
+  cmap2_green = [i[1] for i in cmap2]
+  cmap2_blue = [i[2] for i in cmap2]
+  csum_red = map(lambda x, y: x + y, cmap1_red, cmap2_red)
+  csum_green = map(lambda x, y: x + y, cmap1_green, cmap2_green)
+  csum_blue = map(lambda x, y: x + y, cmap1_blue, cmap2_blue)
+  output = [] # to be filled by 3-tuples for final colormap
+  for idx, elem in enumerate(cinter_red):
+    output.append((elem, cinter_green[idx], cinter_blue[idx]))
+
+  return output
+
+def add_sun(suncmap, othercmap):
+  """
+  The sun colormap is intended to be RGB values (3-tuples) which *replace*
+  the corresponding RGB values in the other colormap.  Not adding RGBs, but
+  replacing the ones in the other colormap.  The suncmap is also assumed to
+  have (0, 0, 0) values outside of the sun, and these are disregarded.
+  """
+  cmapout = []
+  lastindex = 0
+  for idx, rgb in enumerate(suncmap):
+    if rgb != (0, 0, 0):
+      cmapout.append(rgb)
+      lastindex = idx # indicates last index where suncmap had a nonzero rgb
+  for i in othercmap[(lastindex + 1): len(othercmap) - 1]:
+    cmapout.append(i)
+
+  return cmapout
+
+def output_cmap(cmap):
+  """
+  Need to spit out 3-tuple lists in a nice format for importing to C as an include
+  """
+  for idx, i in enumerate(cmap):
+    cmap[idx] = "/".join([str(x) for x in i])
+  output = ", ".join([str(x) for x in cmap])
+  return output
+
 image1 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 image2 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 image3 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 cmaptest1 = linear_gradient(BASEDAY_COLOR, DUSK_COLOR, 180)
 cmaptest2 = linear_gradient(BASEDAY_COLOR, BASENIGHT_COLOR, 180)
 cmaptest3 = linear_gradient(DUSK_COLOR, BASENIGHT_COLOR, 180)
-testinterout = interpolate_colormaps(cmaptest1, 0, cmaptest2, 3, 1)
+testinterout = interpolate_colormaps(cmaptest1, 0, cmaptest2, 8, 7)
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(testinterout)
 #pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(newcolors)
-image1output = draw_lines(181, 181, cmaptest1, image3)
-image1output.show()
-image2output = draw_lines(181, 181, cmaptest2, image3)
-image2output.show()
-interoutput = draw_lines(181, 181, testinterout, image3)
-interoutput.show()
+#image1output = draw_lines(181, 181, cmaptest1, image3)
+#image1output.show()
+#image2output = draw_lines(181, 181, cmaptest2, image3)
+#image2output.show()
+#interoutput = draw_lines(181, 181, testinterout, image3)
+#interoutput.show()
 
-
+testaddsun = []
+for i in range(40):
+  testaddsun.append((255, 255, 255))
+cmaplength = 181
+a = range(cmaplength)
+for i in a[40:len(a)-1]:
+  testaddsun.append((0, 0, 0))
+#pp.pprint(testaddsun)
+image4 = Image.new("RGB", (181, 181), BASEDAY_COLOR)
+addsuntestbase = []
+for i in range(181):
+  addsuntestbase.append(BASEDAY_COLOR)
+suntestcmap = add_sun(testaddsun, addsuntestbase)
+image4output = draw_lines(181, 181, suntestcmap, image4)
+image4output.show()
+pp.pprint(suntestcmap)
+#csv_writer = lambda rows: "\n".join([", ".join([x for x in row]) for row in rows])
+print output_cmap(suntestcmap)
