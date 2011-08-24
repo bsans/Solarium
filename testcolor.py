@@ -31,6 +31,12 @@ GRAYSCALE_150 = (150, 150, 150)
 GRAYSCALE_200 = (200, 200, 200)
 GRAYSCALE_255 = (255, 255, 255)
 
+AZ_SUNSET_HORIZ = (216, 105, 0)
+AZ_SUNSET_HORIZ_5D = (216, 169, 19)
+AZ_SUNSET_HORIZ_20D = (226, 200, 87)
+AZ_SUNSET_HORIZ_50D = (210, 165, 198)
+AZ_SUNSET_HORIZ_90D = (19, 21, 121)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -72,7 +78,7 @@ def multi_step_gradient(colors, col_list_pos):
   for idx in range(len(colors) - 1):
     steps = col_list_pos[idx + 1] - col_list_pos[idx]
     colormap = colormap + linear_gradient(colors[idx], colors[idx + 1], steps)
-  colormap = colormap[0:180]
+  colormap = colormap[0:180] # slicing it, as a hack to trim to right length
   return colormap
 
 def int_cast(cmap):
@@ -251,10 +257,23 @@ image4output = draw_lines(181, 181, suntestcmap, image4)
 #print output_cmap(suntestcmap)
 dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 
-# testing multi_step_gradient
-mycolors = [PREDAWN_HORIZON, PREDAWN_HORIZ_2, PREDAWN_HORIZ_3, PREDAWN_ZENITH]
-mycolorpos = [0, 20, 50, 180]
-multicmap = multi_step_gradient(mycolors, mycolorpos)
+# for multistep grad 
+multicolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
+multicolorpos = [0, 5, 20, 50, 90, 180]
+multicmap = int_cast(multi_step_gradient(multicolors, multicolorpos))
+
+
+AZ_SUNSET_HORIZ = (216, 105, 0)
+AZ_SUNSET_HORIZ_5D = (216, 169, 19)
+AZ_SUNSET_HORIZ_20D = (226, 200, 87)
+AZ_SUNSET_HORIZ_50D = (210, 165, 198)
+AZ_SUNSET_HORIZ_90D = (19, 21, 121)
+image9 = Image.new("RGB", (181, 181), BLACK)
+multicol = draw_lines(181, 181, multicmap, image9)
+multicol.show()
+print output_cmap(multicmap)
+
+
 #pp.pprint(multicmap)
 #image6 = Image.new("RGB", (181, 181), SKYBLUE1)
 #dawntest = draw_lines(181, 181, multicmap, image6)
@@ -264,9 +283,9 @@ multicmap = multi_step_gradient(mycolors, mycolorpos)
 #image7 = Image.new("RGB", (181, 181), SKYBLUE1)
 #control = draw_lines(181, 181, dawncmap, image6)
 #control.show()
-graycmap = int_cast(linear_gradient(GRAYSCALE_2, GRAYSCALE_20, 180))
-image8 = Image.new("RGB", (181, 181), BLACK)
-gray = draw_lines(181, 181, graycmap, image8)
+#graycmap = int_cast(linear_gradient(GRAYSCALE_2, GRAYSCALE_20, 180))
+#image8 = Image.new("RGB", (181, 181), BLACK)
+#gray = draw_lines(181, 181, graycmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
 output_to_file(graycmap)
