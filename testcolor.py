@@ -60,7 +60,10 @@ def interpolate_colormaps(cmap1, time1, cmap2, time2, thistime):
   Takes two colormaps and times (cmap1, time1), and a thistime, and linearly
   interpolates between the two colormaps, given time.  Returns the colormap
   for this time.
-  Note that colormaps are assumed to be lists of the same length
+  Note that colormaps are assumed to be lists of the same length.
+  time1 is assumed to be earlier in time than time2, so that in adding together,
+  the interpolation is done by taking the difference in colors, times the weight
+  factor, and added to the time1
   """
 
   # remember that int division results in int quotients, need to make floats
@@ -73,14 +76,27 @@ def interpolate_colormaps(cmap1, time1, cmap2, time2, thistime):
   cmap2_red = [i[0] for i in cmap2]
   cmap2_green = [i[1] for i in cmap2]
   cmap2_blue = [i[2] for i in cmap2]
-  cinter_red = map(lambda x, y: (x + y) * weight, cmap1_red, cmap2_red)
-  cinter_green = map(lambda x, y: (x + y) * weight, cmap1_green, cmap2_green)
-  cinter_blue = map(lambda x, y: (x + y) * weight, cmap1_blue, cmap2_blue)
+  # problem: we have to figure out the max of the two so that we know how to add
+  # otherwise, we get extra brightness when we didn't want it
+
+  cinter_red = map(lambda x, y: interp_colors(x, y, weight), cmap1_red, cmap2_red)
+  cinter_green = map(lambda x, y: interp_colors(x, y, weight), cmap1_green, cmap2_green)
+  cinter_blue = map(lambda x, y: interp_colors(x, y, weight), cmap1_blue, cmap2_blue)
   output = [] # to be filled by 3-tuples for final colormap
   for idx, elem in enumerate(cinter_red):
     output.append((elem, cinter_green[idx], cinter_blue[idx]))
 
   return output
+
+def interp_colors(val1, val2, weight):
+  """
+  Takes two color values (an R, or a G, or a B) and a weight factor, checks 
+  which is the greater, and thus knows how to do the interpolation to get a
+  proper value
+  """
+  greater = max([val1, val2])
+  lesser = min([val1, val2])
+  return ((greater - lesser) * weight) + lesser
 
 def add_colormaps(cmap1, cmap2):
   """
@@ -134,17 +150,17 @@ image3 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 cmaptest1 = linear_gradient(BASEDAY_COLOR, DUSK_COLOR, 180)
 cmaptest2 = linear_gradient(BASEDAY_COLOR, BASENIGHT_COLOR, 180)
 cmaptest3 = linear_gradient(DUSK_COLOR, BASENIGHT_COLOR, 180)
-testinterout = interpolate_colormaps(cmaptest1, 0, cmaptest2, 8, 7)
+testinterout = interpolate_colormaps(cmaptest2, 0, cmaptest1, 3, 2)
 pp = pprint.PrettyPrinter(indent=4)
 pp.pprint(testinterout)
 #pp = pprint.PrettyPrinter(indent=4)
 #pp.pprint(newcolors)
-#image1output = draw_lines(181, 181, cmaptest1, image3)
-#image1output.show()
-#image2output = draw_lines(181, 181, cmaptest2, image3)
-#image2output.show()
-#interoutput = draw_lines(181, 181, testinterout, image3)
-#interoutput.show()
+image1output = draw_lines(181, 181, cmaptest1, image3)
+image1output.show()
+image2output = draw_lines(181, 181, cmaptest2, image3)
+image2output.show()
+interoutput = draw_lines(181, 181, testinterout, image3)
+interoutput.show()
 
 testaddsun = []
 for i in range(40):
@@ -153,7 +169,6 @@ cmaplength = 181
 a = range(cmaplength)
 for i in a[40:len(a)-1]:
   testaddsun.append((0, 0, 0))
-#pp.pprint(testaddsun)
 image4 = Image.new("RGB", (181, 181), BASEDAY_COLOR)
 addsuntestbase = []
 for i in range(181):
@@ -161,6 +176,5 @@ for i in range(181):
 suntestcmap = add_sun(testaddsun, addsuntestbase)
 image4output = draw_lines(181, 181, suntestcmap, image4)
 image4output.show()
-pp.pprint(suntestcmap)
 #csv_writer = lambda rows: "\n".join([", ".join([x for x in row]) for row in rows])
 print output_cmap(suntestcmap)
