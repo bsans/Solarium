@@ -180,13 +180,14 @@ def add_sun(suncmap, othercmap):
 
   return cmapout
 
-def output_cmap(cmap):
+def output_cmap(thiscmap):
   """
   Need to spit out 3-tuple lists in a nice format for importing to C as an include
   """
-  for idx, i in enumerate(cmap):
-    cmap[idx] = '_'.join([str(x) for x in i]) # escaping forward slash
-  output = ", ".join([str(x) for x in cmap])
+  newcmap = thiscmap
+  for idx, i in enumerate(newcmap):
+    newcmap[idx] = '/'.join([str(x) for x in i]) 
+  output = ", ".join([str(x) for x in newcmap])
   return output
 
 def output_to_file(cmap):
@@ -196,7 +197,9 @@ def output_to_file(cmap):
   f = open(sys.argv[1], 'w')
   #pickle.dump(output_cmap(cmap), f)
   output = output_cmap(cmap)
-  output = r'%s' % output # makes it a "raw" string for writing to file
+  print "writing the following to file:"
+  print
+  print output
   f.write(output)
   f.close()
 
@@ -257,10 +260,11 @@ GRAYSCALE_20 = (20, 20, 20)
 gray20cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_20, 180))
 image8 = Image.new("RGB", (181, 181), BLACK)
 #gray20 = draw_lines(181, 181, gray20cmap, image8)
-print output_cmap(gray20cmap)
+
+# take care....can only do one of the prints, not both! weird char replication
+#print output_cmap(gray20cmap)
 output_to_file(gray20cmap)
 print
 print len(gray20cmap)
 #gray20.show()
-
 
