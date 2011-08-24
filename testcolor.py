@@ -162,10 +162,18 @@ def interp_colors(val1, val2, weight):
   """
   Takes two color values (an R, or a G, or a B) and a weight factor, checks 
   which is the greater, and thus knows how to do the interpolation to get a
-  proper value
+  proper value.
+  Intended to be called from interpolating colormaps, where val1 comes from
+  earlier time and val2 comes from later time.  So the closer in time we are
+  to val2, the more the weight should represent that, even if val2 is a much
+  darker color.
+  Since weight scales the color difference, if the time is later, the weight is
+  larger, but if the later time is darker, we want a smaller weight value. 1 - w.
   """
   greater = max([val1, val2])
   lesser = min([val1, val2])
+  if val2 < val1:
+    weight = 1 - weight # handles a darkening color at a later time
   return ((greater - lesser) * weight) + lesser
 
 def add_colormaps(cmap1, cmap2):
@@ -256,6 +264,14 @@ def output_to_file(cmap):
   f.write(output)
   f.close()
 
+def show_cmap(cmap):
+  """
+  To draw up the cmap to quickly look at it.
+  """
+  image = Image.new("RGB", (181, 181), BLACK)
+  imagedraw = draw_lines(181, 181, cmap, image)
+  imagedraw.show()
+
 
 image1 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 image2 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
@@ -289,43 +305,24 @@ dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 # for sunset
 sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 sunsetcolorpos = [0, 5, 20, 50, 90, 180]
-
-
-
 sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
-
-image9 = Image.new("RGB", (181, 181), BLACK)
-sunsetimage = draw_lines(181, 181, sunsetcmap, image9)
-sunsetimage.show()
+show_cmap(sunsetcmap)
 #output_to_file(multicmap)
 
 # for mid-afternoon
-MIDPM_0D = (255, 255, 255)
-MIDPM_5D = (209, 214, 232)
-MIDPM_10D = (110, 136, 202)
-MIDPM_30D = (83, 107, 179)
-MIDPM_60D = (58, 86, 159)
-MIDPM_120D = (58, 86, 159)
-MIDPM_150D = (83, 107, 179)
-MIDPM_180D = (153, 174, 209)
-
-
-
 midpmcolors = [MIDPM_0D, MIDPM_5D, MIDPM_10D, MIDPM_30D, MIDPM_60D, MIDPM_120D, MIDPM_150D, MIDPM_180D]
 midpmcolorpos = [0, 5, 10, 30, 60, 120, 150, 180]
 midpmcmap = int_cast(multi_step_gradient(midpmcolors, midpmcolorpos))
-image10 = Image.new("RGB", (181, 181), BLACK)
-midpmimage = draw_lines(181, 181, midpmcmap, image10)
-midpmimage.show()
-output_to_file(midpmcmap)
+show_cmap(midpmcmap)
+#output_to_file(midpmcmap)
 
+# 4 pm
+fourpmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 16)
+show_cmap(fourpmcmap)
 
-#image1output = draw_lines(181, 181, cmaptest1, image3)
-#image2output = draw_lines(181, 181, cmaptest2, image3)
-#image2output.show()
-#interoutput = draw_lines(181, 181, testinterout, image3)
-#interoutput.show()
-
+# 5 pm
+fivepmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 17)
+show_cmap(fivepmcmap)
 
 
 #pp.pprint(multicmap)
