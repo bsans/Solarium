@@ -22,6 +22,8 @@ PREDAWN_HORIZ_2 = (23, 38, 54)
 PREDAWN_HORIZ_3 = (8, 16, 35)
 PREDAWN_ZENITH = (4, 7, 14)
 BLACK = (0, 0, 0)
+
+GRAYSCALE_2 = (2, 2, 2)
 GRAYSCALE_20 = (20, 20, 20)
 GRAYSCALE_50 = (50, 50, 50)
 GRAYSCALE_100 = (100, 100, 100)
@@ -262,13 +264,13 @@ multicmap = multi_step_gradient(mycolors, mycolorpos)
 #image7 = Image.new("RGB", (181, 181), SKYBLUE1)
 #control = draw_lines(181, 181, dawncmap, image6)
 #control.show()
-gray255cmap = int_cast(linear_gradient(BLACK, GRAYSCALE_255, 180))
+graycmap = int_cast(linear_gradient(GRAYSCALE_2, GRAYSCALE_20, 180))
 image8 = Image.new("RGB", (181, 181), BLACK)
-gray255 = draw_lines(181, 181, gray255cmap, image8)
+gray = draw_lines(181, 181, graycmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
-output_to_file(gray255cmap)
+output_to_file(graycmap)
 print
-print len(gray255cmap)
-gray255.show()
+print len(graycmap)
+gray.show()
 
