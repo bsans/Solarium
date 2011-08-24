@@ -225,13 +225,14 @@ def output_cmap(thiscmap):
   output = ", ".join([str(x) for x in newcmap])
   return output
 
-def output_to_file(cmap, append=None):
+def output_to_file(cmap):
   """
   Uses output_cmap to write to command line argument specified file.
+  Checks first if file exists already, if so, uses append mode instead of write.
   """
   #pickle.dump(output_cmap(cmap), f)
   
-  if append is not None: 
+  if os.path.isfile(sys.argv[1]):
     f = open(sys.argv[1], 'a')
   else:
     f = open(sys.argv[1], 'w')
@@ -272,7 +273,7 @@ image4output = draw_lines(181, 181, suntestcmap, image4)
 #print output_cmap(suntestcmap)
 dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 
-# for multistep grad 
+# for sunset
 multicolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 multicolorpos = [0, 5, 20, 50, 90, 180]
 multicmap = int_cast(multi_step_gradient(multicolors, multicolorpos))
@@ -287,7 +288,7 @@ image9 = Image.new("RGB", (181, 181), BLACK)
 multicol = draw_lines(181, 181, multicmap, image9)
 multicol.show()
 #print output_cmap(multicmap)
-output_to_file(multicmap, 'append')
+output_to_file(multicmap)
 
 #image1output = draw_lines(181, 181, cmaptest1, image3)
 #image2output = draw_lines(181, 181, cmaptest2, image3)
