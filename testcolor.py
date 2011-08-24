@@ -195,6 +195,26 @@ def add_sun(suncmap, othercmap):
 
   return cmapout
 
+def reduce_brightness(cmap, reduc_fact):
+  """
+  Necessary because Solarium LEDs are super bright in general and a better
+  dynamic range is desirable, so most colormaps require reduction of RGB values.
+  """
+  cmap1_red = [i[0] for i in cmap1]
+  cmap1_green = [i[1] for i in cmap1]
+  cmap1_blue = [i[2] for i in cmap1]
+  cout_red = map(lambda x: x , cmap1_red, cmap2_red)
+  cout_green = map(lambda x: x + y, cmap1_green, cmap2_green)
+  cout_blue = map(lambda x: x + y, cmap1_blue, cmap2_blue)
+  output = [] # to be filled by 3-tuples for final colormap
+  for idx, elem in enumerate(cinter_red):
+    output.append((elem, cinter_green[idx], cinter_blue[idx]))
+
+  return output
+
+
+
+
 def output_cmap(thiscmap):
   """
   Need to spit out 3-tuple lists in a nice format for importing to C as an include
@@ -205,12 +225,16 @@ def output_cmap(thiscmap):
   output = ", ".join([str(x) for x in newcmap])
   return output
 
-def output_to_file(cmap):
+def output_to_file(cmap, append=None):
   """
   Uses output_cmap to write to command line argument specified file.
   """
-  f = open(sys.argv[1], 'w')
   #pickle.dump(output_cmap(cmap), f)
+  
+  if append is not None: 
+    f = open(sys.argv[1], 'a')
+  else:
+    f = open(sys.argv[1], 'w')
   output = output_cmap(cmap)
   print "writing the following to file:"
   print
@@ -229,15 +253,6 @@ noon_cmap1 = linear_gradient(SKYBLUE1, SKYBLUE2, 180)
 #mid_morning_cmap1 = 
 testinterout = interpolate_colormaps(cmaptest2, 0, cmaptest1, 3, 2)
 pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(testinterout)
-#pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(newcolors)
-#image1output = draw_lines(181, 181, cmaptest1, image3)
-#image1output.show()
-#image2output = draw_lines(181, 181, cmaptest2, image3)
-#image2output.show()
-#interoutput = draw_lines(181, 181, testinterout, image3)
-#interoutput.show()
 
 testaddsun = []
 for i in range(40):
@@ -271,7 +286,15 @@ AZ_SUNSET_HORIZ_90D = (19, 21, 121)
 image9 = Image.new("RGB", (181, 181), BLACK)
 multicol = draw_lines(181, 181, multicmap, image9)
 multicol.show()
-print output_cmap(multicmap)
+#print output_cmap(multicmap)
+output_to_file(multicmap, 'append')
+
+#image1output = draw_lines(181, 181, cmaptest1, image3)
+#image2output = draw_lines(181, 181, cmaptest2, image3)
+#image2output.show()
+#interoutput = draw_lines(181, 181, testinterout, image3)
+#interoutput.show()
+
 
 
 #pp.pprint(multicmap)
@@ -288,8 +311,4 @@ print output_cmap(multicmap)
 #gray = draw_lines(181, 181, graycmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
-output_to_file(graycmap)
-print
-print len(graycmap)
-gray.show()
 
