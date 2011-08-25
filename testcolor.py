@@ -301,9 +301,8 @@ def output_to_file(cmap):
     f = open(sys.argv[1], 'a')
   else:
     f = open(sys.argv[1], 'w')
-  #output = output_cmap(cmap)
-  f.write(str(cmap))
-#output + "\n")
+  output = output_cmap(cmap)
+  f.write(output + "\n")
   f.close()
 
 def show_cmap(cmap):
