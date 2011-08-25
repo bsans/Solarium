@@ -89,6 +89,14 @@ MIDNIGHT_100D = (16, 13, 112)
 MIDNIGHT_145D = (2, 0, 44)
 MIDNIGHT_180D = (1, 0, 19)
 
+NIGHT_0D = (110, 78, 117)
+NIGHT_20D = (64, 62, 122)
+NIGHT_30D = (39, 55, 130)
+NIGHT_50D = (22, 38, 103)
+NIGHT_90D = (7, 19, 69)
+NIGHT_145D = (0, 4, 19)
+NIGHT_180D = (0, 3, 15)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -346,7 +354,7 @@ dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 sunsetcolorpos = [0, 5, 20, 50, 90, 180]
 sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
-#show_cmap(sunsetcmap)
+show_cmap(sunsetcmap)
 #output_to_file(sunsetcmap)
 
 # for mid-afternoon, 3 pm
@@ -356,7 +364,7 @@ midpmcmap = int_cast(multi_step_gradient(midpmcolors, midpmcolorpos))
 #show_cmap(midpmcmap)
 #output_to_file(midpmcmap)
 
-# 4 pm
+# 4 pm 
 fourpmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 16)
 #show_cmap(fourpmcmap)
 
@@ -413,7 +421,7 @@ predawncolors = [PREDAWN_0D, PREDAWN_20D, PREDAWN_45D, PREDAWN_70D,
                 PREDAWN_100D, PREDAWN_150D, PREDAWN_180D]               
 predawncolorpos = [0, 20, 45, 70, 100, 150, 180]
 predawncmap = int_cast(multi_step_gradient(predawncolors, predawncolorpos))
-show_cmap(predawncmap)
+#show_cmap(predawncmap)
 
 # 4 am
 fouramcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 4)
@@ -428,26 +436,43 @@ midnightcolors = [MIDNIGHT_0D, MIDNIGHT_75D, MIDNIGHT_90D, MIDNIGHT_100D,
                 MIDNIGHT_145D, MIDNIGHT_180D]
 midnightcolorpos = [0, 75, 90, 100, 145, 180]
 midnightcmap = int_cast(multi_step_gradient(midnightcolors, midnightcolorpos))
-show_cmap(midnightcmap)
+#show_cmap(midnightcmap)
 
 # 1 am
 oneamcmap = interpolate_colormaps(midnightcmap, 0, predawncmap, 3, 1)
-show_cmap(oneamcmap)
+#show_cmap(oneamcmap)
 
 # 2 am
 twoamcmap = interpolate_colormaps(midnightcmap, 0, predawncmap, 3, 2)
-show_cmap(twoamcmap)
+#show_cmap(twoamcmap)
+
+# for night, 9 pm
+nightcolors = [NIGHT_0D, NIGHT_20D, NIGHT_30D, NIGHT_50D, NIGHT_90D, NIGHT_145D, NIGHT_180D]
+nightcolorpos = [0, 20, 30, 50, 90, 145, 180]
+nightcmap = int_cast(multi_step_gradient(nightcolors, nightcolorpos))
+show_cmap(nightcmap)
+
+# 7 pm
+sevenpmcmap = interpolate_colormaps(sunsetcmap, 18, nightcmap, 21, 19)
+show_cmap(sevenpmcmap)
+
+# 8 pm
+eightpmcmap = interpolate_colormaps(sunsetcmap, 18, nightcmap, 21, 20)
+show_cmap(eightpmcmap)
+
+
+# 10 pm
+tenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 22)
+show_cmap(tenpmcmap)
+
+# 11 pm
+elevenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 23)
+show_cmap(elevenpmcmap)
 
 
 #//////////////
 # for writing lines to output file
 #//////////////
-output_to_file(midnightcmap)
-output_to_file(oneamcmap)
-output_to_file(twoamcmap)
-output_to_file(predawncmap)
-output_to_file(fouramcmap)
-output_to_file(fiveamcmap)
 output_to_file(sunrisecmap)
 output_to_file(sevenamcmap)
 output_to_file(eightamcmap)
@@ -461,6 +486,18 @@ output_to_file(midpmcmap)
 output_to_file(fourpmcmap)
 output_to_file(fivepmcmap)
 output_to_file(sunsetcmap)
+output_to_file(sevenpmcmap)
+output_to_file(eightpmcmap)
+output_to_file(nightcmap)
+output_to_file(tenpmcmap)
+output_to_file(elevenpmcmap)
+output_to_file(midnightcmap)
+output_to_file(oneamcmap)
+output_to_file(twoamcmap)
+output_to_file(predawncmap)
+output_to_file(fouramcmap)
+output_to_file(fiveamcmap)
+
 
 # take care with the output printing....can only print to file function or
 # print to stdout, not both! weird char replication bug...
