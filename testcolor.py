@@ -63,6 +63,25 @@ MIDAM_140D = (68, 140, 162)
 MIDAM_160D = (142, 198, 199)
 MIDAM_180D = (188, 219, 213)
 
+SUNRISE_0D = (252, 252, 70)
+SUNRISE_10D = (254, 179, 0)
+SUNRISE_30D = (244, 138, 78)
+SUNRISE_45D = (216, 110, 150)
+SUNRISE_60D = (168, 108, 194)
+SUNRISE_75D = (133, 114, 222)
+SUNRISE_90D = (108, 97, 193)
+SUNRISE_130D = (82, 71, 184)
+SUNRISE_160D = (41, 46, 158)
+SUNRISE_180D = (20, 43, 110)
+
+PREDAWN_0D = (128, 79, 148)
+PREDAWN_20D = (89, 52, 103)
+PREDAWN_45D = (62, 52, 104)
+PREDAWN_70D = (43, 53, 104)
+PREDAWN_100D = (23, 53, 103)
+PREDAWN_150D = (7, 43, 82)
+PREDAWN_180D = (4, 31, 60)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -320,52 +339,93 @@ dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 sunsetcolorpos = [0, 5, 20, 50, 90, 180]
 sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
-show_cmap(sunsetcmap)
+#show_cmap(sunsetcmap)
 #output_to_file(sunsetcmap)
 
 # for mid-afternoon, 3 pm
 midpmcolors = [MIDPM_0D, MIDPM_5D, MIDPM_10D, MIDPM_30D, MIDPM_60D, MIDPM_120D, BLACK]
 midpmcolorpos = [0, 5, 10, 30, 60, 120, 180]
 midpmcmap = int_cast(multi_step_gradient(midpmcolors, midpmcolorpos))
-show_cmap(midpmcmap)
+#show_cmap(midpmcmap)
 #output_to_file(midpmcmap)
 
 # 4 pm
 fourpmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 16)
-show_cmap(fourpmcmap)
+#show_cmap(fourpmcmap)
 
 # 5 pm
 fivepmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 17)
-show_cmap(fivepmcmap)
+#show_cmap(fivepmcmap)
 
 # for noon, 12 pm
 nooncolors = [NOON_0D, NOON_5D, NOON_15D, NOON_50D, NOON_75D, NOON_90D, BLACK]
 nooncolorpos = [0, 5, 15, 50, 75, 90, 180]
 nooncmap = int_cast(multi_step_gradient(nooncolors, nooncolorpos))
-show_cmap(nooncmap)
+#show_cmap(nooncmap)
 
 # 1 pm
 onepmcmap = interpolate_colormaps(nooncmap, 12, midpmcmap, 15, 13)
-show_cmap(onepmcmap)
+#show_cmap(onepmcmap)
 
 # 2 pm
 twopmcmap = interpolate_colormaps(nooncmap, 12, midpmcmap, 15, 14)
-show_cmap(twopmcmap)
+#show_cmap(twopmcmap)
 
 # for mid-morning, 9 am
 midamcolors = [MIDAM_0D, MIDAM_15D, MIDAM_45D, MIDAM_60D, MIDAM_90D, MIDAM_140D, MIDAM_160D, MIDAM_180D]
 midamcolorpos = [0, 15, 45, 60, 90, 140, 160, 180]
 midamcmap = int_cast(multi_step_gradient(midamcolors, midamcolorpos))
-show_cmap(midamcmap)
+#show_cmap(midamcmap)
 
 # 10 am
 tenamcmap = interpolate_colormaps(midamcmap, 9, nooncmap, 12, 10)
-show_cmap(tenamcmap)
+#show_cmap(tenamcmap)
 
 # 11 am
 elevamcmap = interpolate_colormaps(midamcmap, 9, nooncmap, 12, 11)
-show_cmap(elevamcmap)
+#show_cmap(elevamcmap)
 
+# for sunrise, 6 am
+sunrisecolors = [SUNRISE_0D, SUNRISE_10D, SUNRISE_30D, SUNRISE_45D,
+                SUNRISE_60D, SUNRISE_75D, SUNRISE_90D, SUNRISE_130D,
+                SUNRISE_160D, SUNRISE_180D]
+sunrisecolorpos = [0, 10, 30, 45, 60, 75, 90, 130, 160, 180]
+sunrisecmap = int_cast(multi_step_gradient(sunrisecolors, sunrisecolorpos))
+#show_cmap(sunrisecmap)
+
+# 7 am
+sevenamcmap = interpolate_colormaps(sunrisecmap, 6, midamcmap, 9, 7)
+#show_cmap(sevenamcmap)
+
+# 8 am
+eightamcmap = interpolate_colormaps(sunrisecmap, 6, midamcmap, 9, 8)
+#show_cmap(eightamcmap)
+
+# for pre-dawn, 3 am
+predawncolors = [PREDAWN_0D, PREDAWN_20D, PREDAWN_45D, PREDAWN_70D,
+                PREDAWN_100D, PREDAWN_150D, PREDAWN_180D]               
+predawncolorpos = [0, 20, 45, 70, 100, 150, 180]
+predawncmap = int_cast(multi_step_gradient(predawncolors, predawncolorpos))
+#show_cmap(predawncmap)
+
+# 4 am
+fouramcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 4)
+#show_cmap(fouramcmap)
+
+# 5 am
+fiveamcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 5)
+#show_cmap(fiveamcmap)
+
+
+#//////////////
+# for writing lines to output file
+#//////////////
+output_to_file(predawncmap)
+output_to_file(fouramcmap)
+output_to_file(fiveamcmap)
+output_to_file(sunrisecmap)
+output_to_file(sevenamcmap)
+output_to_file(eightamcmap)
 output_to_file(midamcmap)
 output_to_file(tenamcmap)
 output_to_file(elevamcmap)
@@ -377,7 +437,6 @@ output_to_file(fourpmcmap)
 output_to_file(fivepmcmap)
 output_to_file(sunsetcmap)
 
-#pp.pprint(dawncmap)
-
-# take care....can only do one of the prints, not both! weird char replication
-
+# take care with the output printing....can only print to file function or
+# print to stdout, not both! weird char replication bug...
+# .. there's always pp.pprint..
