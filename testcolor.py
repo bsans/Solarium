@@ -46,6 +46,23 @@ MIDPM_120D = (58, 86, 159)
 MIDPM_150D = (83, 107, 179)
 MIDPM_180D = (153, 174, 209)
 
+NOON_0D = (255, 255, 255)
+NOON_5D = (95, 97, 107)
+NOON_15D = (38, 44, 71)
+NOON_50D = (43, 66, 118)
+NOON_75D = (70, 109, 180)
+NOON_90D = (157, 214, 249)
+NOON_180D = (157, 214, 249)
+
+MIDAM_0D = (250, 253, 244)
+MIDAM_15D = (217, 233, 233)
+MIDAM_45D = (173, 214, 210)
+MIDAM_60D = (128, 188, 196)
+MIDAM_90D = (46, 135, 153)
+MIDAM_140D = (68, 140, 162)
+MIDAM_160D = (142, 198, 199)
+MIDAM_180D = (188, 219, 213)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -156,7 +173,7 @@ def interpolate_colormaps(cmap1, time1, cmap2, time2, thistime):
   for idx, elem in enumerate(cinter_red):
     output.append((elem, cinter_green[idx], cinter_blue[idx]))
 
-  return output
+  return int_cast(output)
 
 def interp_colors(val1, val2, weight):
   """
@@ -254,14 +271,11 @@ def output_to_file(cmap):
   else:
     f = open(sys.argv[1], 'w')
   output = output_cmap(cmap)
+  print
   print "writing the following to file:"
   print
   print output
-  print
-  print "number of elements:"
-  print
-  print len(output)
-  f.write(output)
+  f.write(output + "\n")
   f.close()
 
 def show_cmap(cmap):
@@ -302,16 +316,16 @@ image4output = draw_lines(181, 181, suntestcmap, image4)
 #print output_cmap(suntestcmap)
 dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 
-# for sunset
+# for sunset, 6 pm
 sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 sunsetcolorpos = [0, 5, 20, 50, 90, 180]
 sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
 show_cmap(sunsetcmap)
-#output_to_file(multicmap)
+#output_to_file(sunsetcmap)
 
-# for mid-afternoon
-midpmcolors = [MIDPM_0D, MIDPM_5D, MIDPM_10D, MIDPM_30D, MIDPM_60D, MIDPM_120D, MIDPM_150D, MIDPM_180D]
-midpmcolorpos = [0, 5, 10, 30, 60, 120, 150, 180]
+# for mid-afternoon, 3 pm
+midpmcolors = [MIDPM_0D, MIDPM_5D, MIDPM_10D, MIDPM_30D, MIDPM_60D, MIDPM_120D, BLACK]
+midpmcolorpos = [0, 5, 10, 30, 60, 120, 180]
 midpmcmap = int_cast(multi_step_gradient(midpmcolors, midpmcolorpos))
 show_cmap(midpmcmap)
 #output_to_file(midpmcmap)
@@ -324,19 +338,46 @@ show_cmap(fourpmcmap)
 fivepmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 17)
 show_cmap(fivepmcmap)
 
+# for noon, 12 pm
+nooncolors = [NOON_0D, NOON_5D, NOON_15D, NOON_50D, NOON_75D, NOON_90D, BLACK]
+nooncolorpos = [0, 5, 15, 50, 75, 90, 180]
+nooncmap = int_cast(multi_step_gradient(nooncolors, nooncolorpos))
+show_cmap(nooncmap)
 
-#pp.pprint(multicmap)
-#image6 = Image.new("RGB", (181, 181), SKYBLUE1)
-#dawntest = draw_lines(181, 181, multicmap, image6)
-#dawntest.show()
-#print output_cmap(multicmap)
+# 1 pm
+onepmcmap = interpolate_colormaps(nooncmap, 12, midpmcmap, 15, 13)
+show_cmap(onepmcmap)
+
+# 2 pm
+twopmcmap = interpolate_colormaps(nooncmap, 12, midpmcmap, 15, 14)
+show_cmap(twopmcmap)
+
+# for mid-morning, 9 am
+midamcolors = [MIDAM_0D, MIDAM_15D, MIDAM_45D, MIDAM_60D, MIDAM_90D, MIDAM_140D, MIDAM_160D, MIDAM_180D]
+midamcolorpos = [0, 15, 45, 60, 90, 140, 160, 180]
+midamcmap = int_cast(multi_step_gradient(midamcolors, midamcolorpos))
+show_cmap(midamcmap)
+
+# 10 am
+tenamcmap = interpolate_colormaps(midamcmap, 9, nooncmap, 12, 10)
+show_cmap(tenamcmap)
+
+# 11 am
+elevamcmap = interpolate_colormaps(midamcmap, 9, nooncmap, 12, 11)
+show_cmap(elevamcmap)
+
+output_to_file(midamcmap)
+output_to_file(tenamcmap)
+output_to_file(elevamcmap)
+output_to_file(nooncmap)
+output_to_file(onepmcmap)
+output_to_file(twopmcmap)
+output_to_file(midpmcmap)
+output_to_file(fourpmcmap)
+output_to_file(fivepmcmap)
+output_to_file(sunsetcmap)
+
 #pp.pprint(dawncmap)
-#image7 = Image.new("RGB", (181, 181), SKYBLUE1)
-#control = draw_lines(181, 181, dawncmap, image6)
-#control.show()
-#graycmap = int_cast(linear_gradient(GRAYSCALE_2, GRAYSCALE_20, 180))
-#image8 = Image.new("RGB", (181, 181), BLACK)
-#gray = draw_lines(181, 181, graycmap, image8)
 
 # take care....can only do one of the prints, not both! weird char replication
 
