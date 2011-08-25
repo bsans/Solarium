@@ -6,10 +6,6 @@ import sys
 import math
 import pprint
 import pickle
-# im = Image.open("/Users/Bodhi/Desktop/solarium/whiteimage.jpg")
-#draw = ImageDraw.Draw(im)
-#draw.line((0, im.size[1], im.size[0], 0), fill=128)
-#im.show()
 
 # Constant color values used for colormap making
 BASENIGHT_COLOR=(3, 6, 15)
@@ -97,6 +93,8 @@ NIGHT_50D = (22, 38, 103)
 NIGHT_90D = (7, 19, 69)
 NIGHT_145D = (0, 4, 19)
 NIGHT_180D = (0, 3, 15)
+
+list_of_cmaps = [] # for filling with cmaps
 
 def linear_gradient(start_color, end_color, num_steps):
   """
@@ -282,8 +280,6 @@ def reduce_brightness(cmap, reduc_fact):
   return output
 
 
-
-
 def output_cmap(thiscmap):
   """
   Need to spit out 3-tuple lists in a nice format for importing to C as an include
@@ -291,8 +287,8 @@ def output_cmap(thiscmap):
   newcmap = thiscmap
   for idx, i in enumerate(newcmap):
     newcmap[idx] = '/'.join([str(x) for x in i]) 
-  output = ", ".join([str(x) for x in newcmap])
-  return output
+  format_output = ", ".join([str(x) for x in newcmap])
+  return format_output
 
 def output_to_file(cmap):
   """
@@ -305,12 +301,9 @@ def output_to_file(cmap):
     f = open(sys.argv[1], 'a')
   else:
     f = open(sys.argv[1], 'w')
-  output = output_cmap(cmap)
-  print
-  print "writing the following to file:"
-  print
-  print output
-  f.write(output + "\n")
+  #output = output_cmap(cmap)
+  f.write(str(cmap))
+#output + "\n")
   f.close()
 
 def show_cmap(cmap):
@@ -321,6 +314,41 @@ def show_cmap(cmap):
   imagedraw = draw_lines(181, 181, cmap, image)
   imagedraw.show()
 
+def more_cmaps(cmaps_list, num_cmaps_out):
+  """
+  Takes a list of colormaps and an int to make more colormaps out of these
+  seeds by interpolating between them.
+  """
+  # uses the number of cmaps given to determine the step sizes
+  more_cmaps = [] 
+  #more_cmaps = [None] * num_cmaps_out # make empty array of Nones of right size
+  steps_between = (num_cmaps_out / len(cmaps_list)) - 1 # e.g. for 48 out cmaps, 48 / 8 - 1 = 5 between
+  odd_indices = [2 * x + 1 for x in range(len(cmaps_list) / 2)]
+  even_indices = [2 * x for x in range(len(cmaps_list) / 2)]
+  print "cmaps list len is:"
+  print len(cmaps_list)
+  for i in even_indices:
+    # gives me the even indices I will be using
+    for step in range(steps_between):
+      firsttime = steps_between * i
+      secondtime = steps_between * (i + 1) + 1
+      interp_cmap = interpolate_colormaps(cmaps_list[i], firsttime, cmaps_list[i+1], secondtime, firsttime + step + 1)
+      more_cmaps.append(interp_cmap)
+    if i < max(even_indices):
+      for step in range(steps_between):
+        firsttime = steps_between * (i + 1)
+        secondtime = steps_between * (i + 2) + 1
+        interp_cmap = interpolate_colormaps(cmaps_list[i+1], firsttime, cmaps_list[i+2], secondtime, firsttime + step + 1)
+        more_cmaps.append(interp_cmap)
+    else:
+      for step in range(steps_between):
+        firsttime = steps_between * (i + 1)
+        secondtime = steps_between * (i + 2) + 1
+        interp_cmap = interpolate_colormaps(cmaps_list[-1], firsttime, cmaps_list[0], secondtime, firsttime + step + 1)
+        more_cmaps.append(interp_cmap)
+
+  
+  return more_cmaps
 
 image1 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
 image2 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
@@ -470,34 +498,48 @@ tenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 22)
 elevenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 23)
 #show_cmap(elevenpmcmap)
 
+for i in [sunrisecmap, midamcmap, nooncmap, midpmcmap, sunsetcmap, nightcmap, midnightcmap, predawncmap]:
+  list_of_cmaps.append(i)
+
+print
+print "len is"
+print len(list_of_cmaps)
+
+test_list = more_cmaps(list_of_cmaps, 48)
+
+for cmap in test_list:
+  show_cmap(cmap)
+
+
+# NOTE: output_to_file method that does reformatting, CHANGES the cmaps
 
 #//////////////
 # for writing lines to output file
 #//////////////
-output_to_file(sunrisecmap)
-output_to_file(sevenamcmap)
-output_to_file(eightamcmap)
-output_to_file(midamcmap)
-output_to_file(tenamcmap)
-output_to_file(elevamcmap)
-output_to_file(nooncmap)
-output_to_file(onepmcmap)
-output_to_file(twopmcmap)
-output_to_file(midpmcmap)
-output_to_file(fourpmcmap)
-output_to_file(fivepmcmap)
-output_to_file(sunsetcmap)
-output_to_file(sevenpmcmap)
-output_to_file(eightpmcmap)
-output_to_file(nightcmap)
-output_to_file(tenpmcmap)
-output_to_file(elevenpmcmap)
-output_to_file(midnightcmap)
-output_to_file(oneamcmap)
-output_to_file(twoamcmap)
-output_to_file(predawncmap)
-output_to_file(fouramcmap)
-output_to_file(fiveamcmap)
+#output_to_file(sunrisecmap)
+#output_to_file(sevenamcmap)
+#output_to_file(eightamcmap)
+#output_to_file(midamcmap)
+#output_to_file(tenamcmap)
+#output_to_file(elevamcmap)
+#output_to_file(nooncmap)
+#output_to_file(onepmcmap)
+#output_to_file(twopmcmap)
+#output_to_file(midpmcmap)
+#output_to_file(fourpmcmap)
+#output_to_file(fivepmcmap)
+#output_to_file(sunsetcmap)
+#output_to_file(sevenpmcmap)
+#output_to_file(eightpmcmap)
+#output_to_file(nightcmap)
+#output_to_file(tenpmcmap)
+#output_to_file(elevenpmcmap)
+#output_to_file(midnightcmap)
+#output_to_file(oneamcmap)
+#output_to_file(twoamcmap)
+#output_to_file(predawncmap)
+#output_to_file(fouramcmap)
+#output_to_file(fiveamcmap)
 
 
 # take care with the output printing....can only print to file function or
