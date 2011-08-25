@@ -322,31 +322,32 @@ def more_cmaps(cmaps_list, num_cmaps_out):
   more_cmaps = [] 
   #more_cmaps = [None] * num_cmaps_out # make empty array of Nones of right size
   steps_between = (num_cmaps_out / len(cmaps_list)) - 1 # e.g. for 48 out cmaps, 48 / 8 - 1 = 5 between
+  print steps_between
   odd_indices = [2 * x + 1 for x in range(len(cmaps_list) / 2)]
   even_indices = [2 * x for x in range(len(cmaps_list) / 2)]
-  print "cmaps list len is:"
-  print len(cmaps_list)
   for i in even_indices:
     # gives me the even indices I will be using
+    more_cmaps.append(cmaps_list[i])
     for step in range(steps_between):
       firsttime = steps_between * i
       secondtime = steps_between * (i + 1) + 1
       interp_cmap = interpolate_colormaps(cmaps_list[i], firsttime, cmaps_list[i+1], secondtime, firsttime + step + 1)
       more_cmaps.append(interp_cmap)
     if i < max(even_indices):
+      more_cmaps.append(cmaps_list[i+1])
       for step in range(steps_between):
         firsttime = steps_between * (i + 1)
         secondtime = steps_between * (i + 2) + 1
         interp_cmap = interpolate_colormaps(cmaps_list[i+1], firsttime, cmaps_list[i+2], secondtime, firsttime + step + 1)
         more_cmaps.append(interp_cmap)
     else:
+      more_cmaps.append(cmaps_list[-1])
       for step in range(steps_between):
         firsttime = steps_between * (i + 1)
         secondtime = steps_between * (i + 2) + 1
         interp_cmap = interpolate_colormaps(cmaps_list[-1], firsttime, cmaps_list[0], secondtime, firsttime + step + 1)
         more_cmaps.append(interp_cmap)
-
-  
+ 
   return more_cmaps
 
 image1 = Image.new("RGB", (181, 181), BASENIGHT_COLOR)
@@ -501,6 +502,8 @@ for i in [sunrisecmap, midamcmap, nooncmap, midpmcmap, sunsetcmap, nightcmap, mi
   list_of_cmaps.append(i)
 
 make_128_cmaps = more_cmaps(list_of_cmaps, 128)
+
+print len(make_128_cmaps)
 
 #for cmap in test_list:
 #  show_cmap(cmap)
