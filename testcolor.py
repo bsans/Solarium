@@ -501,15 +501,13 @@ elevenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 23)
 for i in [sunrisecmap, midamcmap, nooncmap, midpmcmap, sunsetcmap, nightcmap, midnightcmap, predawncmap]:
   list_of_cmaps.append(i)
 
-print
-print "len is"
-print len(list_of_cmaps)
+make_128_cmaps = more_cmaps(list_of_cmaps, 128)
 
-test_list = more_cmaps(list_of_cmaps, 48)
+#for cmap in test_list:
+#  show_cmap(cmap)
 
-for cmap in test_list:
-  show_cmap(cmap)
-
+for cmap in make_128_cmaps:
+  output_to_file(cmap)
 
 # NOTE: output_to_file method that does reformatting, CHANGES the cmaps
 
