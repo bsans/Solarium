@@ -37,8 +37,8 @@ AZ_SUNSET_HORIZ_20D = (226, 200, 87)
 AZ_SUNSET_HORIZ_50D = (210, 165, 198)
 AZ_SUNSET_HORIZ_90D = (19, 21, 121)
 
-MIDPM_0D = (255, 255, 255)
-MIDPM_5D = (209, 214, 232)
+MIDPM_0D = (255, 232, 87)
+MIDPM_5D = (255, 161, 110)
 MIDPM_10D = (110, 136, 202)
 MIDPM_30D = (83, 107, 179)
 MIDPM_60D = (58, 86, 159)
@@ -46,16 +46,17 @@ MIDPM_120D = (58, 86, 159)
 MIDPM_150D = (83, 107, 179)
 MIDPM_180D = (153, 174, 209)
 
-NOON_0D = (255, 255, 255)
-NOON_5D = (95, 97, 107)
-NOON_15D = (38, 44, 71)
-NOON_50D = (43, 66, 118)
-NOON_75D = (70, 109, 180)
+NOON_0D = (255, 232, 87)
+NOON_5D = (255, 161, 110)
+NOON_10D = (185, 169, 129)
+NOON_40D = (91, 139, 213)
+NOON_60D = (43, 66, 118)
+NOON_80D = (70, 109, 180)
 NOON_90D = (157, 214, 249)
 NOON_180D = (157, 214, 249)
 
-MIDAM_0D = (250, 253, 244)
-MIDAM_15D = (217, 233, 233)
+MIDAM_0D = (241, 242, 94)
+MIDAM_15D = (223, 235, 145)
 MIDAM_45D = (173, 214, 210)
 MIDAM_60D = (128, 188, 196)
 MIDAM_90D = (46, 135, 153)
@@ -354,7 +355,7 @@ dawncmap = linear_gradient(PREDAWN_HORIZON, PREDAWN_ZENITH, 180)
 sunsetcolors = [AZ_SUNSET_HORIZ, AZ_SUNSET_HORIZ_5D, AZ_SUNSET_HORIZ_20D, AZ_SUNSET_HORIZ_50D, AZ_SUNSET_HORIZ_90D, BLACK]
 sunsetcolorpos = [0, 5, 20, 50, 90, 180]
 sunsetcmap = int_cast(multi_step_gradient(sunsetcolors, sunsetcolorpos))
-show_cmap(sunsetcmap)
+#show_cmap(sunsetcmap)
 #output_to_file(sunsetcmap)
 
 # for mid-afternoon, 3 pm
@@ -373,8 +374,8 @@ fivepmcmap = interpolate_colormaps(midpmcmap, 15, sunsetcmap, 18, 17)
 #show_cmap(fivepmcmap)
 
 # for noon, 12 pm
-nooncolors = [NOON_0D, NOON_5D, NOON_15D, NOON_50D, NOON_75D, NOON_90D, BLACK]
-nooncolorpos = [0, 5, 15, 50, 75, 90, 180]
+nooncolors = [NOON_0D, NOON_5D, NOON_10D, NOON_40D, NOON_60D, NOON_80D, NOON_90D, NOON_180D]
+nooncolorpos = [0, 5, 10, 40, 60, 80, 90, 180]
 nooncmap = int_cast(multi_step_gradient(nooncolors, nooncolorpos))
 #show_cmap(nooncmap)
 
@@ -450,24 +451,24 @@ twoamcmap = interpolate_colormaps(midnightcmap, 0, predawncmap, 3, 2)
 nightcolors = [NIGHT_0D, NIGHT_20D, NIGHT_30D, NIGHT_50D, NIGHT_90D, NIGHT_145D, NIGHT_180D]
 nightcolorpos = [0, 20, 30, 50, 90, 145, 180]
 nightcmap = int_cast(multi_step_gradient(nightcolors, nightcolorpos))
-show_cmap(nightcmap)
+#show_cmap(nightcmap)
 
 # 7 pm
 sevenpmcmap = interpolate_colormaps(sunsetcmap, 18, nightcmap, 21, 19)
-show_cmap(sevenpmcmap)
+#show_cmap(sevenpmcmap)
 
 # 8 pm
 eightpmcmap = interpolate_colormaps(sunsetcmap, 18, nightcmap, 21, 20)
-show_cmap(eightpmcmap)
+#show_cmap(eightpmcmap)
 
 
 # 10 pm
 tenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 22)
-show_cmap(tenpmcmap)
+#show_cmap(tenpmcmap)
 
 # 11 pm
 elevenpmcmap = interpolate_colormaps(nightcmap, 21, midnightcmap, 24, 23)
-show_cmap(elevenpmcmap)
+#show_cmap(elevenpmcmap)
 
 
 #//////////////
