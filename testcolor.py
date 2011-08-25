@@ -82,6 +82,13 @@ PREDAWN_100D = (23, 53, 103)
 PREDAWN_150D = (7, 43, 82)
 PREDAWN_180D = (4, 31, 60)
 
+MIDNIGHT_0D = (51, 51, 88)
+MIDNIGHT_75D = (8, 7, 62)
+MIDNIGHT_90D = (19, 15, 110)
+MIDNIGHT_100D = (16, 13, 112)
+MIDNIGHT_145D = (2, 0, 44)
+MIDNIGHT_180D = (1, 0, 19)
+
 def linear_gradient(start_color, end_color, num_steps):
   """
   defines color gradient to use, returning a list of length steps as the values
@@ -406,7 +413,7 @@ predawncolors = [PREDAWN_0D, PREDAWN_20D, PREDAWN_45D, PREDAWN_70D,
                 PREDAWN_100D, PREDAWN_150D, PREDAWN_180D]               
 predawncolorpos = [0, 20, 45, 70, 100, 150, 180]
 predawncmap = int_cast(multi_step_gradient(predawncolors, predawncolorpos))
-#show_cmap(predawncmap)
+show_cmap(predawncmap)
 
 # 4 am
 fouramcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 4)
@@ -416,10 +423,28 @@ fouramcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 4)
 fiveamcmap = interpolate_colormaps(predawncmap, 3, sunrisecmap, 6, 5)
 #show_cmap(fiveamcmap)
 
+# for midnight, 12 am
+midnightcolors = [MIDNIGHT_0D, MIDNIGHT_75D, MIDNIGHT_90D, MIDNIGHT_100D,
+                MIDNIGHT_145D, MIDNIGHT_180D]
+midnightcolorpos = [0, 75, 90, 100, 145, 180]
+midnightcmap = int_cast(multi_step_gradient(midnightcolors, midnightcolorpos))
+show_cmap(midnightcmap)
+
+# 1 am
+oneamcmap = interpolate_colormaps(midnightcmap, 0, predawncmap, 3, 1)
+show_cmap(oneamcmap)
+
+# 2 am
+twoamcmap = interpolate_colormaps(midnightcmap, 0, predawncmap, 3, 2)
+show_cmap(twoamcmap)
+
 
 #//////////////
 # for writing lines to output file
 #//////////////
+output_to_file(midnightcmap)
+output_to_file(oneamcmap)
+output_to_file(twoamcmap)
 output_to_file(predawncmap)
 output_to_file(fouramcmap)
 output_to_file(fiveamcmap)
